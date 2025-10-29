@@ -17,9 +17,7 @@ from typing import Dict, Any, Tuple
 from aes_utils import generate_aes_key, aes_encrypt, aes_decrypt
 from nimc_mock import get_nimc_record  # uses keyword-based fields
 
-# ------------------------
-# Risk keyword groups (from your keyword list)
-# ------------------------
+
 HIGH_RISK_KEYWORDS = [
     'full name', 'complete name', 'real name',
     'home address', 'residential address', 'street address', 'physical address',
@@ -87,8 +85,7 @@ def _generate_anon_id(nin: str) -> str:
     """
     nonce = secrets.token_hex(8)
     digest = hashlib.sha256(f"{nin}:{nonce}".encode("utf-8")).hexdigest()
-    return digest[:12]  # 12 hex chars (48 bits) - short but unique for demo
-
+    return digest[:12] 
 
 def register_user_from_nin(nin: str) -> Dict[str, Any]:
     """
@@ -152,5 +149,6 @@ def decrypt_sensitive(encrypted_record: Dict[str, Any], passphrase: str = None) 
         raise ValueError("No encrypted_sensitive blob found.")
 
     return aes_decrypt(enc_blob, key)
+
 
 
