@@ -1,12 +1,3 @@
-# aes_utils.py
-"""
-AES-GCM utilities using cryptography.hazmat.
-Provides:
-- generate_aes_key(passphrase, salt=None) -> (key, salt)
-- aes_encrypt(data_dict, key) -> dict with base64 iv/ciphertext/tag
-- aes_decrypt(enc_blob, key) -> original dict
-"""
-
 import os
 import json
 import base64
@@ -83,3 +74,4 @@ def aes_decrypt(enc_blob: Dict[str, str], key: bytes) -> Dict[str, Any]:
 
     plaintext = decryptor.update(ciphertext) + decryptor.finalize()
     return json.loads(plaintext.decode("utf-8"))
+
