@@ -130,5 +130,4 @@ Enter NIN to register: 12345678901
 ---
 
 ## 📜 License
-This codebase is provided for educational and research purposes under the **MIT License**.  
-Use responsibly and ensure compliance with NDPR and other applicable data-protection laws.
+Private- Anon ID E-D-V System. 
