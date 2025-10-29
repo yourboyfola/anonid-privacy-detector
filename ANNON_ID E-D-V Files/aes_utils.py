@@ -7,11 +7,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
-# Recommended parameters
-_KDF_ITERATIONS = 390000
-_KEY_LENGTH = 32  # AES-256
-_IV_LENGTH = 12   # 96-bit nonce for GCM
-
 
 def generate_aes_key(passphrase: str, salt: bytes = None) -> Tuple[bytes, bytes]:
     """
@@ -74,4 +69,5 @@ def aes_decrypt(enc_blob: Dict[str, str], key: bytes) -> Dict[str, Any]:
 
     plaintext = decryptor.update(ciphertext) + decryptor.finalize()
     return json.loads(plaintext.decode("utf-8"))
+
 
