@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnonID - AI Privacy Risk Detection</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="logo">
+          <i class="fas fa-user-shield"></i>
+          <span>AnonID</span>
+        </div>
+      </div>
+      
+      <div class="nav-menu">
+        <a href="#dashboard" class="nav-link active">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+        <a href="#analyze" class="nav-link">
+          <i class="fas fa-search"></i>
+          Analyze
+        </a>
+        <a href="#reports" class="nav-link">
+          <i class="fas fa-chart-bar"></i>
+          Reports
+        </a>
+        <a href="#protection" class="nav-link">
+          <i class="fas fa-lock"></i>
+          Protection
+        </a>
+      </div>
+
+      <div class="nav-actions">
+        <button class="nav-btn">
+          <i class="fas fa-bell"></i>
+        </button>
+        <button class="nav-btn">
+          <i class="fas fa-cog"></i>
+        </button>
+        <div class="user-avatar">
+          <i class="fas fa-user-secret"></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Banner for Team/Project -->
+  <section class="team-hero">
+    <div class="team-hero-content">
+      <h2>Welcome to AnonID</h2>
+      <p>Empowering Nigeria's digital economy with AI-driven privacy and data protection. Our mission is to secure your digital identity and ensure NDPR compliance for all.</p>
+      <div class="team-hero-icons">
+        <i class="fas fa-shield-alt"></i>
+        <i class="fas fa-user-lock"></i>
+        <i class="fas fa-fingerprint"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <i class="fas fa-shield-alt"></i>
+          NDPR Compliant
+        </div>
+        <h1>Protect Your Digital Identity</h1>
+        <p class="hero-subtitle">AI-powered privacy risk detection for Nigeria's digital economy. Secure your personal data with advanced machine learning.</p>
+        
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-file-shield"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">2,847</span>
+              <span class="stat-label">Files Secured</span>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-bug"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">99.2%</span>
+              <span class="stat-label">Detection Rate</span>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number">1.8s</span>
+              <span class="stat-label">Avg. Scan Time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Scanner -->
+    <section class="scanner-section">
+      <div class="scanner-card">
+        <div class="scanner-header">
+          <div class="scanner-icon">
+            <i class="fas fa-radar-dish"></i>
+          </div>
+          <div class="scanner-title">
+            <h2>Privacy Risk Scanner</h2>
+            <p>Upload documents to detect sensitive information and privacy violations</p>
+          </div>
+        </div>
+
+        <div class="scanner-body">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" hidden accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+            <div class="upload-content">
+              <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </div>
+              <h3>Secure File Analysis</h3>
+              <p>Drag & drop files or click to browse. We analyze locally - your data never leaves your device.</p>
+              <div class="file-types">
+                <span class="file-type">
+                  <i class="fas fa-file-pdf"></i>
+                  PDF
+                </span>
+                <span class="file-type">
+                  <i class="fas fa-file-word"></i>
+                  DOCX
+                </span>
+                <span class="file-type">
+                  <i class="fas fa-file-alt"></i>
+                  TXT
+                </span>
+                <span class="file-type">
+                  <i class="fas fa-file-image"></i>
+                  Images
+                </span>
+              </div>
+            </div>
+            
+            <div class="file-preview" id="filePreview" style="display: none;">
+              <div class="preview-content">
+                <div class="file-info">
+                  <div class="file-icon">
+                    <i class="fas fa-file" id="fileIcon"></i>
+                  </div>
+                  <div class="file-details">
+                    <span class="file-name" id="fileName"></span>
+                    <span class="file-size" id="fileSize"></span>
+                  </div>
+                </div>
+                <div class="file-actions">
+                  <button class="action-btn danger" id="removeFile">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="scan-progress">
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-text" id="progressText">Ready to scan</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="scanner-actions">
+            <button class="btn btn-primary" id="analyzeBtn" disabled>
+              <i class="fas fa-shield-alt"></i>
+              Scan for Privacy Risks
+            </button>
+            <button class="btn btn-secondary" id="clearBtn">
+              <i class="fas fa-eraser"></i>
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+      <div class="results-card">
+        <div class="results-header">
+          <div class="results-title">
+            <h2>Privacy Analysis Report</h2>
+            <p>Comprehensive security assessment of your document</p>
+          </div>
+          <div class="risk-summary">
+            <div class="risk-badge" id="riskBadge">
+              <span class="risk-level" id="riskLevel">Low Risk</span>
+              <span class="risk-score" id="riskScore">24/100</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <!-- Risk Overview -->
+          <div class="result-panel risk-overview">
+            <h3>Risk Overview</h3>
+            <div class="risk-metrics">
+              <div class="risk-metric critical">
+                <div class="metric-value" id="criticalCount">0</div>
+                <div class="metric-label">Critical</div>
+                <div class="metric-bar">
+                  <div class="bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="risk-metric high">
+                <div class="metric-value" id="highCount">0</div>
+                <div class="metric-label">High</div>
+                <div class="metric-bar">
+                  <div class="bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="risk-metric medium">
+                <div class="metric-value" id="mediumCount">0</div>
+                <div class="metric-label">Medium</div>
+                <div class="metric-bar">
+                  <div class="bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="risk-metric low">
+                <div class="metric-value" id="lowCount">0</div>
+                <div class="metric-label">Low</div>
+                <div class="metric-bar">
+                  <div class="bar-fill" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detected Risks -->
+          <div class="result-panel risks-detected">
+            <div class="panel-header">
+              <h3>Detected Privacy Risks</h3>
+              <span class="count-badge" id="risksCount">0 risks</span>
+            </div>
+            <div class="risks-list" id="risksList">
+              <!-- Risks will be populated here -->
+            </div>
+          </div>
+
+          <!-- Protection Plan -->
+          <div class="result-panel protection-plan">
+            <div class="panel-header">
+              <h3>Protection Recommendations</h3>
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="recommendations-list" id="recommendationsList">
+              <!-- Recommendations will be populated here -->
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="result-panel quick-actions">
+            <h3>Security Actions</h3>
+            <div class="action-grid">
+              <button class="action-card">
+                <i class="fas fa-download"></i>
+                <span>Export Report</span>
+              </button>
+              <button class="action-card">
+                <i class="fas fa-redo"></i>
+                <span>Rescan File</span>
+              </button>
+              <button class="action-card">
+                <i class="fas fa-mask"></i>
+                <span>Anonymize Data</span>
+              </button>
+              <button class="action-card">
+                <i class="fas fa-history"></i>
+                <span>Save to History</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <div class="section-header">
+        <h2>Advanced Privacy Protection</h2>
+        <p>Built with cutting-edge technology to secure Nigeria's digital future</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-user-shield"></i>
+          </div>
+          <h3>NDPR Compliance</h3>
+          <p>Ensure complete compliance with Nigeria Data Protection Regulation. Automated checks for data handling requirements.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3>Real-Time Privacy Insights</h3>
+          <p>Instantly detect and visualize privacy risks in your documents using advanced analytics and secure local processing. Stay informed and protected at every step.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Real-Time Analysis</h3>
+          <p>Instant privacy risk assessment with average processing under 2 seconds. No data leaves your device.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Enhanced Footer with Waves -->
+  <footer class="enhanced-footer">
+    <div class="footer-waves">
+      <div class="wave wave-1"></div>
+      <div class="wave wave-2"></div>
+      <div class="wave wave-3"></div>
+    </div>
+    <div class="footer-particles" id="footerParticles"></div>
+    
+    <div class="footer-content">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <i class="fas fa-user-shield"></i>
+            <span>AnonID</span>
+          </div>
+          <p>Protecting digital privacy through advanced AI technology. Built for Nigeria's growing digital economy and NDPR compliance.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="#" class="social-link" aria-label="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <div class="link-group">
+            <h4>Product</h4>
+            <a href="#">Overview</a>
+            <a href="#">How It Works</a>
+            <a href="#">Roadmap</a>
+          </div>
+          <!-- <div class="link-group">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">NDPR Compliance</a>
+          </div> -->
+          <div class="link-group">
+            <h4>Support</h4>
+            <a href="#">Help Center</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Report an Issue</a>
+          </div>
+          <div class="link-group">
+            <h4>Team</h4>
+            <a href="#">About Us</a>
+            <a href="#">Our Mission</a>
+            <a href="#">Join the Team</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-legal">
+          <p>&copy; 2025 AnonID Privacy Technologies. All rights reserved. Built for Nigeria's Digital Economy.</p>
+          <div class="legal-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">NDPR Compliance</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Three.js from CDN -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script> -->
+  <!-- <script src="shield.js"></script> -->
+  <script src="app.js"></script>
+</body>
+</html>
