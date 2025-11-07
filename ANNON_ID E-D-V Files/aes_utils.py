@@ -7,6 +7,11 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 
+# AES-256 constants
+_KEY_LENGTH = 32  # 256 bits
+_IV_LENGTH = 12   # 96 bits for GCM
+_KDF_ITERATIONS = 100000  # PBKDF2 iterations
+
 
 def generate_aes_key(passphrase: str, salt: bytes = None) -> Tuple[bytes, bytes]:
     """

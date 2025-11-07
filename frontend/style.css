@@ -1203,6 +1203,53 @@ body {
   color: var(--primary);
 }
 
+/* NIN Registration Form */
+.nin-registration-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.nin-form-container h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.nin-input-group {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.nin-input {
+  flex: 1;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.nin-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nin-input::placeholder {
+  color: #64748b;
+}
+
+.nin-input-group .btn {
+  white-space: nowrap;
+}
+
 /* Notification System */
 .notification {
   position: fixed;

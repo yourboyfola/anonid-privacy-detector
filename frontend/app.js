@@ -2,15 +2,116 @@ class AnonIDApp {
     constructor() {
         this.currentFile = null;
         this.isAnalyzing = false;
+        this.apiBaseUrl = 'http://localhost:5000/api';
         
         this.initializeApp();
         this.setupEventListeners();
         this.createFooterParticles();
+        this.createNINRegistrationForm();
     }
 
     initializeApp() {
         console.log('AnonID Privacy Detector initialized');
         this.showNotification('Welcome to AnonID - Your Digital Privacy Guardian', 'info');
+        this.checkBackendHealth();
+    }
+    
+    async checkBackendHealth() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/health`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Backend connected:', data);
+            }
+        } catch (error) {
+            console.warn('Backend not available:', error);
+            this.showNotification('Backend server not available. Some features may not work.', 'warning');
+        }
+    }
+    
+    createNINRegistrationForm() {
+        // Add NIN registration section to the scanner card
+        const scannerCard = document.querySelector('.scanner-card .scanner-body');
+        if (!scannerCard) return;
+        
+        const ninSection = document.createElement('div');
+        ninSection.className = 'nin-registration-section';
+        ninSection.innerHTML = `
+            <div class="nin-form-container">
+                <h3 style="margin-bottom: 1rem; color: white;">
+                    <i class="fas fa-id-card"></i> Identity Registration
+                </h3>
+                <div class="nin-input-group">
+                    <input type="text" id="ninInput" placeholder="Enter your NIN (e.g., 12345678901)" 
+                           maxlength="11" class="nin-input" />
+                    <button class="btn btn-primary" id="registerNINBtn">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </div>
+                <div id="ninStatus" style="margin-top: 1rem;"></div>
+            </div>
+        `;
+        
+        scannerCard.insertBefore(ninSection, scannerCard.firstChild);
+        
+        // Add event listener for registration
+        document.getElementById('registerNINBtn').addEventListener('click', () => {
+            this.handleNINRegistration();
+        });
+        
+        // Allow Enter key
+        document.getElementById('ninInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleNINRegistration();
+            }
+        });
+    }
+    
+    async handleNINRegistration() {
+        const ninInput = document.getElementById('ninInput');
+        const nin = ninInput.value.trim();
+        const statusDiv = document.getElementById('ninStatus');
+        
+        if (!nin || nin.length < 10) {
+            statusDiv.innerHTML = '<p style="color: var(--danger);">Please enter a valid NIN (10-11 digits)</p>';
+            return;
+        }
+        
+        statusDiv.innerHTML = '<p style="color: var(--primary);"><i class="fas fa-spinner fa-spin"></i> Registering...</p>';
+        
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nin: nin })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                statusDiv.innerHTML = `
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                        <p style="color: var(--success); margin-bottom: 0.5rem;">
+                            <i class="fas fa-check-circle"></i> Registration Successful!
+                        </p>
+                        <p style="color: #94a3b8; font-size: 0.9rem;">
+                            <strong>AnonID:</strong> ${data.anon_id}<br>
+                            <strong>Masked NIN:</strong> ${data.masked_nin}
+                        </p>
+                    </div>
+                `;
+                this.showNotification('User registered successfully', 'success');
+            } else {
+                statusDiv.innerHTML = `<p style="color: var(--danger);">${data.error || 'Registration failed'}</p>`;
+                this.showNotification(data.error || 'Registration failed', 'error');
+            }
+        } catch (error) {
+            statusDiv.innerHTML = '<p style="color: var(--danger);">Connection error. Is the backend server running?</p>';
+            this.showNotification('Failed to connect to backend server', 'error');
+            console.error('Registration error:', error);
+        }
     }
 
     setupEventListeners() {
@@ -243,11 +344,103 @@ class AnonIDApp {
     }
 
     async performPrivacyAnalysis(file) {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1800));
-
-        // Generate realistic privacy analysis results
-        return this.generatePrivacyResults(file);
+        try {
+            // Read file content (simplified - for text files)
+            const fileContent = await this.readFileContent(file);
+            
+            // Call backend API to check privacy risk
+            const response = await fetch('http://localhost:5000/api/check_privacy_risk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    request_text: fileContent.substring(0, 500) // First 500 chars as sample
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Privacy analysis failed');
+            }
+            
+            const riskData = await response.json();
+            
+            // Convert backend risk level to frontend format
+            const riskLevelMap = {
+                'Safe': 'low',
+                'Medium': 'medium',
+                'High': 'high'
+            };
+            
+            return {
+                riskLevel: riskLevelMap[riskData.risk_level] || 'medium',
+                riskScore: riskData.risk_score,
+                summary: {
+                    critical: riskData.risk_level === 'High' ? 1 : 0,
+                    high: riskData.risk_level === 'High' ? 1 : 0,
+                    medium: riskData.risk_level === 'Medium' ? 1 : 0,
+                    low: riskData.risk_level === 'Safe' ? 1 : 0
+                },
+                risks: this.convertBackendRisks(riskData),
+                recommendations: this.generateSecurityRecommendations(
+                    riskLevelMap[riskData.risk_level] || 'medium'
+                )
+            };
+        } catch (error) {
+            console.error('Privacy analysis error:', error);
+            // Fallback to mock data if API fails
+            return this.generatePrivacyResults(file);
+        }
+    }
+    
+    async readFileContent(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            
+            if (file.type.startsWith('text/') || file.type === 'application/pdf') {
+                reader.readAsText(file);
+            } else {
+                // For images, just return filename
+                resolve(file.name);
+            }
+        });
+    }
+    
+    convertBackendRisks(riskData) {
+        const risks = [];
+        
+        if (riskData.flags && riskData.flags.length > 0) {
+            riskData.flags.forEach(flag => {
+                if (flag.includes('🚨')) {
+                    risks.push({
+                        type: 'high',
+                        title: flag.replace('🚨 Requesting: ', ''),
+                        description: 'High-risk personal data detected',
+                        location: 'Document Content'
+                    });
+                } else if (flag.includes('⚠️')) {
+                    risks.push({
+                        type: 'medium',
+                        title: flag.replace('⚠️ Requesting: ', ''),
+                        description: 'Medium-risk personal data detected',
+                        location: 'Document Content'
+                    });
+                }
+            });
+        }
+        
+        if (risks.length === 0) {
+            risks.push({
+                type: 'low',
+                title: 'No Privacy Risks Detected',
+                description: riskData.recommendation || 'Document appears safe',
+                location: 'General'
+            });
+        }
+        
+        return risks;
     }
 
     generatePrivacyResults(file) {
